@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>세종대왕의 한글날 퀴즈 (v2)</title>
+<title>세종대왕의 한글날 퀴즈 (v3)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
@@ -120,7 +120,8 @@
   }
   #qcard .qno{font-size:clamp(13px,1.6vw,20px);color:#8a6a1a;font-weight:700}
   #qcard .qsent{font-size:clamp(24px,3.7vw,54px);font-weight:700;line-height:1.5;margin-top:.2em;word-break:keep-all}
-  .blank{display:inline-block;min-width:2.8em;border-bottom:.09em solid var(--red);color:var(--red);text-align:center}
+  .blank{display:inline-flex;gap:.12em;vertical-align:baseline;margin:0 .15em}
+  .blank i{display:inline-block;width:1.05em;height:1.15em;border-bottom:.09em solid var(--red);font-style:normal}
   #choices{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:1.6vh 1.4vw;animation:pop .4s ease}
   #quiz.solo #choices{display:block;width:auto}
   .vnChoice{
@@ -2453,7 +2454,10 @@ async function runQuiz(name) {
   for (let i = 0; i < QUESTIONS.length; i++) {
     const q = QUESTIONS[i];
     hud.textContent = `문제 ${i+1} / ${QUESTIONS.length}`;
-    qcard.innerHTML = `<div class="qno">제 ${i+1} 문</div><div class="qsent">${q.sentence}</div>`;
+    const nSyl = Math.max(...q.options.map(o => [...o].length));   // 정답 음절 수만큼 빈칸
+    const boxes = '<span class="blank">' + '<i></i>'.repeat(nSyl) + '</span>';
+    const sent = q.sentence.replace(/<span class="blank">.*?<\/span>/, boxes);
+    qcard.innerHTML = `<div class="qno">제 ${i+1} 문</div><div class="qsent">${sent}</div>`;
     quiz.classList.remove('hide'); qcard.classList.remove('hide');
     choicesEl.classList.add('hide');
 
